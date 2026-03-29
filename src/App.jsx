@@ -7,6 +7,7 @@ import Profile from './Profile';
 import SectionPage from './SectionPage';
 import DetailPage from './DetailPage';
 import Sidebar from './Sidebar';
+import Chatbot from './Chatbot';
 
 // Get or generate user_id
 const getUserId = () => {
@@ -86,6 +87,8 @@ function AppLayout({ children }) {
       }}>
         {children}
       </main>
+      {/* Floating Chatbot */}
+      {showSidebar && <Chatbot />}
     </div>
   );
 }
