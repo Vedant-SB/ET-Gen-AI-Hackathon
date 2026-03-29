@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Card from './Card';
 
-function SectionRow({ title, items, sectionKey, showViewAll = true }) {
+function SectionRow({ title, items, sectionKey, showViewAll = true, hideTitle = false }) {
   const navigate = useNavigate();
 
   const handleViewAll = () => {
@@ -11,14 +11,29 @@ function SectionRow({ title, items, sectionKey, showViewAll = true }) {
   return (
     <section style={styles.section}>
       {/* Section Header */}
-      <div style={styles.header}>
-        <h2 style={styles.title}>{title}</h2>
-        {showViewAll && (
-          <button style={styles.viewAllBtn} onClick={handleViewAll}>
-            View All →
-          </button>
-        )}
-      </div>
+      {!hideTitle && (
+        <div style={styles.header}>
+          <h2 style={styles.title}>{title}</h2>
+          {showViewAll && (
+            <button 
+              style={styles.viewAllBtn} 
+              onClick={handleViewAll}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#ef4444';
+                e.currentTarget.style.color = '#fff';
+                e.currentTarget.style.borderColor = '#ef4444';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = '#dc2626';
+                e.currentTarget.style.borderColor = '#e5e7eb';
+              }}
+            >
+              View All
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Horizontal Scroll Container */}
       <div style={styles.scrollContainer}>
@@ -43,7 +58,7 @@ const styles = {
   title: {
     fontSize: '20px',
     fontWeight: '600',
-    color: '#1a1a2e',
+    color: '#111827',
     margin: 0,
   },
   viewAllBtn: {
@@ -51,18 +66,17 @@ const styles = {
     fontSize: '13px',
     fontWeight: '500',
     background: 'transparent',
-    border: '1px solid #ddd',
-    borderRadius: '20px',
+    border: '1px solid #e5e7eb',
+    borderRadius: '6px',
     cursor: 'pointer',
-    color: '#666',
-    transition: 'all 0.2s',
+    color: '#dc2626',
+    transition: 'all 0.15s ease',
   },
   scrollContainer: {
     display: 'flex',
     gap: '16px',
     overflowX: 'auto',
     paddingBottom: '8px',
-    scrollbarWidth: 'thin',
   },
 };
 

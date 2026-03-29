@@ -1,16 +1,79 @@
-# React + Vite
+# ET Navigator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ET Navigator is an AI-powered platform that helps users discover and navigate different services within the Economic Times ecosystem, including ET Prime, Markets, Masterclasses, and Events.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Problem
 
-## React Compiler
+Economic Times offers multiple services, but users often don’t know what is relevant to them. This leads to poor discovery and low engagement.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Solution
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+ET Navigator uses a chat-based onboarding system to understand the user and recommend relevant and personalized content across different ET sections.
+
+---
+
+## Features
+
+- Chat-based user onboarding  
+- User profile generation  
+- Personalized recommendations  
+- Section-based browsing (Insights, Markets, Learn, Events)  
+- Dynamic updates based on user profile  
+
+---
+
+## Tech Stack
+
+Frontend:
+- React
+- Tailwind CSS
+- React Router
+
+Backend:
+- Flask (Python)
+
+Database:
+- Firebase Firestore
+
+AI:
+- Gemini API (optional)
+
+---
+
+## Setup Instructions
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Vedant-SB/ET-Gen-AI-Hackathon
+
+cd ET-Gen-AI-Hackathon
+```
+
+### 2. Frontend setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### 3. Backend setup
+```bash
+cd backend
+pip install -r requirements.txt
+python app.py
+```
+
+### 4. Environment Variables
+
+Create a `.env` file in the backend folder and add required keys (Firebase, Gemini if used).
+
+Make sure both frontend and backend are running simultaneously.
+
+## Project Structure
+- /frontend – React application
+- /backend – Flask server
+- /data – Static dataset

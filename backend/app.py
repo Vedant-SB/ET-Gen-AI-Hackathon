@@ -5,7 +5,7 @@ import google.generativeai as genai
 import os
 import json
 import re
-from firebase_service import save_chat, save_profile, get_profile, update_profile
+from firebase_service import save_chat_message, save_profile, get_profile, update_profile, user_exists, get_chat
 
 load_dotenv()
 
@@ -249,6 +249,11 @@ def chat():
         if not user_message:
             return jsonify({"error": "Message cannot be empty"}), 400
 
+        # Get user_id from request (required)
+        user_id = data.get("user_id")
+        if not user_id:
+            return jsonify({"error": "user_id is required"}), 400
+
         history = data.get("history", [])
 
         # LIMIT CONVERSATION (prevents endless chat)
@@ -257,15 +262,17 @@ def chat():
         else:
             reply = get_ai_response(user_message, history)
 
-        # Save BOTH user + assistant messages
-        updated_history = history + [
+        # Create new messages to append
+        new_messages = [
             {"role": "user", "content": user_message},
             {"role": "assistant", "content": reply}
         ]
 
-        save_chat("test_user", updated_history)
+        # Save ONLY the new messages (append using ArrayUnion)
+        save_chat_message(user_id, new_messages)
 
-        user_id = data.get("user_id", "test_user")
+        # Updated history for response
+        updated_history = history + new_messages
         
         # If onboarding complete, extract and save profile
         if "generate your experience" in reply.lower():
@@ -309,12 +316,52 @@ def update_user_profile(user_id):
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/user/exists/<user_id>", methods=["GET"])
+def check_user_exists(user_id):
+    """Check if a user exists in Firebase."""
+    try:
+        exists = user_exists(user_id)
+        return jsonify({"exists": exists})
+    except Exception as e:
+        print("🔥 ERROR:", str(e))
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/save-profile", methods=["POST"])
+def save_user_profile():
+    """Save user profile directly (no Gemini dependency)."""
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "Data is required"}), 400
+        
+        user_id = data.get("user_id")
+        profile = data.get("profile")
+        
+        if not user_id:
+            return jsonify({"error": "user_id is required"}), 400
+        
+        if not profile:
+            return jsonify({"error": "profile is required"}), 400
+        
+        # Save profile to Firebase
+        saved_profile = save_profile(user_id, profile)
+        
+        return jsonify({"success": True, "profile": saved_profile})
+    except Exception as e:
+        print("🔥 ERROR:", str(e))
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/recommendations", methods=["POST"])
 def get_recommendations():
     """Get rule-based recommendations for a user."""
     try:
         data = request.get_json()
-        user_id = data.get("user_id", "test_user")
+        user_id = data.get("user_id")
+        if not user_id:
+            return jsonify({"error": "user_id is required"}), 400
         
         profile = get_profile(user_id)
         recommendations = get_rule_based_recommendations(profile)
